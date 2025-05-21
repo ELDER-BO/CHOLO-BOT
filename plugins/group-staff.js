@@ -63,7 +63,6 @@ let handler = async (m, { conn }) => {
 // Configuración del comando
 handler.help = ["staff"];
 handler.command = ["colaboradores", "staff"];
-handler.register = true;
 handler.tags = ["main"];
 
 export default handler;
