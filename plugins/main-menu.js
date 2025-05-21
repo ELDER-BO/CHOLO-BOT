@@ -1,257 +1,204 @@
-import { promises } from 'fs'
-import { join } from 'path'
-import fetch from 'node-fetch'
-import { xpRange } from '../lib/levelling.js'
-let Styles = (text, style = 1) => {
-  var xStr = 'abcdefghijklmnopqrstuvwxyz1234567890'.split('');
-  var yStr = Object.freeze({
-    1: 'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘqʀꜱᴛᴜᴠᴡxʏᴢ1234567890'
-  });
-  var replacer = [];
-  xStr.map((v, i) => replacer.push({
-    original: v,
-    convert: yStr[style].split('')[i]
-  }));
-  var str = text.toLowerCase().split('');
-  var output = [];
-  str.map(v => {
-    const find = replacer.find(x => x.original == v);
-    find ? output.push(find.convert) : output.push(v);
-  });
-  return output.join('');
-};
-let tags = {
-  'anime': '🧧 _ANIME_ 🎐',
-  'main': '❗ _INFO_ ❕',
-  'search': '🔎 _SEARCH_ 🔍',
-  'game': '🕹️ GAME 🎮',
-  'serbot': '⚙️ _SUB BOTS_ 🤖',
-  'rpg': '🌐 _RPG_ 🥇',
-  'rg': '🎑 _REGISTRO_ 🎟️',
-  'sticker': '💟 2STICKER_ 🏷️',
-  'img': '🖼️ _IMAGE_ 🎇',
-  'group': '👥 _GROUPS_ 📢',
-//  'logo': '_MAKER_',
-  'nable': '🎛️ _ON / OFF_ 🔌', 
-  'premium': '💎 _PREMIUM_ 👑',
-  'downloader': '📥 _DOWNLOAD_ 📤',
-  'tools': '🔧 _TOOLS_ 🛠️',
-  'fun': '🎉 _FUN_ 🎊',
-  'nsfw': '🔞 _NSFW_ 📛', 
-  'cmd': '🧮 _DATABASE_ 🖥️',
-  'owner': '👤 _OWNER_ 👁️', 
-  'audio': '📣 _AUDIOS_ 🔊', 
-  'advanced': '🗝️ _ADVANCED_ 📍',
-  'frefire':  '🎮_frefire_ 🎮',
-}
+let handler = async (m, { conn }) => {
+    try {
+        let d = new Date();
+        let locale = 'es';
+        let week = d.toLocaleDateString(locale, { weekday: 'long' });
+        let date = d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
 
-const defaultMenu = {
-  before:  `*─ׄ─ׅ─⭒─ׄ─ׄ─⭒─ׅ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׄ─*
+        let menu = `
+*¡Hola! 👋🏻 @${m.sender.split("@")[0]}*
+\`\`\`${week}, ${date}\`\`\`
 
-Hola *%name* soy *Barboza*
+╭━━━━━━⋆★⋆━━━━━━─
+┃   ⏤͟͟͞͞𝗖𝗥𝗘𝗔𝗗𝗢𝗥:
+┃ 👤 *HN-ELDER* 🥷
+╰━━━━━━⋆★⋆━━━━━━─
 
-╔══════ •『 𝑪𝑹𝑬𝑨𝑫𝑶𝑹 』
-║  🖥️ Barboza
-╚═════ ♢.✰.♢ ══════
-╔══════ •『 𝑰𝑵𝑭𝑶-𝑩𝑶𝑻 』
-║  👤 Cliente: %name
-║  ⭐ Exp: %exp
-║  ⚡ Nivel: %level
-╚═════ ♢.✰.♢ ═══════
+» 𝘉𝘪𝘦𝘯𝘷𝘦𝘯𝘪𝘥𝘰, 𝘦𝘴𝘵𝘦 𝘦𝘴 𝘶𝘯 𝘮𝘦𝘯𝘶́ 𝘳𝘦𝘴𝘶𝘮𝘪𝘥𝘰 𝘥𝘦 𝘵𝘰𝘥𝘰 𝘭𝘰 𝘲𝘶𝘦 𝘤𝘰𝘯𝘵𝘪𝘦𝘯𝘦 𝘌𝘭𝘥𝘦𝘳-𝘣𝘰𝘵.
 
-╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  🤖 Bot: ©Bot-Barboza-Ai®
-║  💎 Modo Público
-║  💨 Baileys: Multi Device
-║  🪄 Tiempo Activo: %muptime
-║  🎩 Usuarios: %totalreg 
-╚═════ ♢.✰.♢ ════════
+╭━━[ 𝗜𝗡𝗙𝗢𝗥𝗠𝗔𝗖𝗜𝗢́𝗡 💻 ]━⬣
+┃👨🏻‍💻 .𝘗𝘦𝘳𝘧𝘪𝘭
+┃👨🏻‍💻 .𝘔𝘦𝘯𝘶
+┃👨🏻‍💻 .𝘔𝘦𝘯𝘶𝘩𝘰𝘵
+┃👨🏻‍💻 .𝘔𝘦𝘯𝘶2
+┃👨🏻‍💻 .𝘔𝘦𝘯𝘶3
+┃👨🏻‍💻 .𝘔𝘦𝘯𝘶𝘧𝘧
+┃👨🏻‍💻 .𝘚𝘵𝘢𝘧𝘧
+┃👨🏻‍💻  𝘌𝘴𝘵𝘢𝘥𝘰
+┃👨🏻‍💻 .𝘗𝘳𝘦𝘤𝘪𝘰𝘴1
+┃👨🏻‍💻 .𝘗𝘳𝘦𝘤𝘪𝘰𝘴2
+┃👨🏻‍💻 .𝘖𝘸𝘯𝘦𝘳
+┃👨🏻‍💻 .𝘛𝘰𝘵𝘢𝘭𝘧𝘶𝘯𝘤𝘪𝘰𝘯𝘦𝘴
+┃👨🏻‍💻 .𝘣𝘰𝘵𝘳𝘦𝘨𝘭𝘢𝘴
+╰━━━━━━━⋆★⋆━━━━━━━⬣
 
-*─ׄ─ׄ─⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׅ─*
- %readmore
-\t\t\t⚙️_*𝐋𝐈𝐒𝐓𝐀 𝐃𝐄 𝐂𝐎𝐌𝐀𝐍𝐃𝐎𝐒*_ 🚀
-`.trimStart(),
-  header: '*╭╍╍╍╍❖【 *%category* 】',
-  body: '┋💎›【 %cmd %islimit %isPremium\n',
-  footer: '*╰╍╍╍╍❖•ೋ° °ೋ•❖╍╍╍╍╯*',
-  after: `© ${textbot}`,
-}
+╭━━[ 𝗕𝗨́𝗦𝗤𝗨𝗘𝗗𝗔𝗦🔎 ]━⬣
+┃🕵🏻‍♂️ .𝘐𝘮𝘢𝘨𝘦𝘯
+┃🕵🏻‍♂️ .𝘗𝘪𝘯𝘴𝘤𝘳𝘰𝘭𝘭 *<ʙᴜ́sǫᴜᴇᴅᴀ>*
+┃🕵🏻‍♂️ .𝘗𝘪𝘯𝘴𝘦𝘨𝘶𝘪𝘳
+┃🕵🏻‍♂️ .𝘗𝘪𝘯𝘢𝘵𝘳𝘢𝘴
+┃🕵🏻‍♂️ .𝘠𝘵𝘴𝘦𝘢𝘳𝘤𝘩 *<ᴛxᴛ>*
+┃🕵🏻‍♂️ .𝘛𝘬𝘴𝘦𝘢𝘳𝘤𝘩 *<ᴛxᴛ>*
+┃🕵🏻‍♂️ .𝘛𝘬𝘴𝘦𝘨𝘶𝘪𝘳
+┃🕵🏻‍♂️ .𝘕𝘦𝘬𝘰
+┃🕵🏻‍♂️ .𝘞𝘢𝘪𝘧𝘶
+┃🕵🏻‍♂️ .𝘉𝘪𝘣𝘭𝘪𝘢 *<ʀᴇғᴇʀᴇɴᴄɪᴀ>*
+┃🕵🏻‍♂️ .𝘗𝘪𝘯𝘵𝘦𝘳𝘦𝘴𝘵
+┃🕵🏻‍♂️ .𝘞𝘪𝘬𝘪𝘱𝘦𝘥𝘪𝘢
+┃🕵🏻‍♂️ .𝘎𝘰𝘰𝘨𝘭𝘦
+┃🕵🏻‍♂️ .𝘔𝘦𝘳𝘤𝘢𝘥𝘰𝘭𝘪𝘣𝘳𝘦
+┃🕵🏻‍♂️ .𝘛𝘸𝘦𝘦𝘵𝘰𝘰𝘴𝘵𝘴
+╰━━━━━━━⋆★⋆━━━━━━━⬣
 
-let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
-  try {
-     let tag = `@${m.sender.split("@")[0]}`
-    let mode = global.opts["self"] ? "Privado" : "Publico"
-    let _package = JSON.parse(await promises.readFile(join(__dirname, '../package.json')).catch(_ => ({}))) || {}
-    let { exp, limit, level } = global.db.data.users[m.sender]
-    let { min, xp, max } = xpRange(level, global.multiplier)
-    let name = await conn.getName(m.sender)
-    let d = new Date(new Date + 3600000)
-    let locale = 'es'
-    let weton = ['Pahing', 'Pon', 'Wage', 'Kliwon', 'Legi'][Math.floor(d / 84600000) % 5]
-    let week = d.toLocaleDateString(locale, { weekday: 'long' })
-    let date = d.toLocaleDateString(locale, {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    })
-    let dateIslamic = Intl.DateTimeFormat(locale + '-TN-u-ca-islamic', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(d)
-    let time = d.toLocaleTimeString(locale, {
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric'
-    })
-    let _uptime = process.uptime() * 1000
-    let _muptime
-    if (process.send) {
-      process.send('uptime')
-      _muptime = await new Promise(resolve => {
-        process.once('message', resolve)
-        setTimeout(resolve, 1000)
-      }) * 1000
+╭━━[ 𝗚𝗥𝗨𝗣𝗢𝗦 👥 ]━⬣
+┃⚙️ .𝘎𝘳𝘶𝘱𝘰 𝘢𝘣𝘳𝘪𝘳/𝘤𝘦𝘳𝘳𝘢𝘳
+┃⚙️ .𝘐𝘯𝘷𝘪𝘵𝘢𝘳 *<ɴᴜ́ᴍᴇʀᴏ>*
+┃⚙️ .𝘉𝘢𝘯 *<@ᴛᴀɢ>*
+┃⚙️ .𝘙𝘶𝘭𝘦𝘵𝘢𝘣𝘢𝘯
+┃⚙️ .𝘗𝘳𝘰𝘮𝘰𝘵𝘦 *<@ᴛᴀɢ>*
+┃⚙️ .𝘋𝘦𝘮𝘰𝘵𝘦 *< @ᴛᴀɢ>*
+┃⚙️ .𝘛𝘰𝘥𝘰𝘴
+┃⚙️ .𝘕𝘰𝘵𝘪𝘧𝘺
+┃⚙️ .𝘓𝘪𝘯𝘬
+┃⚙️ .𝘚𝘦𝘵𝘸𝘦𝘭𝘤𝘰𝘮𝘦
+┃⚙️ .𝘚𝘦𝘵𝘣𝘺𝘦
+┃⚙️ .𝘔𝘶𝘵𝘦
+┃⚙️ .𝘜𝘯𝘮𝘶𝘵𝘦
+┃⚙️ .𝘚𝘰𝘳𝘵𝘦𝘰
+┃⚙️ .𝘈𝘧𝘬 *<ᴛxᴛ>*
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━━[ 𝗢𝗪𝗡𝗘𝗥 👑 ]━━━⬣
+┃👑 .𝘉𝘢𝘯𝘤𝘩𝘢𝘵
+┃👑 .𝘜𝘯𝘣𝘢𝘯𝘤𝘩𝘢𝘵
+┃👑 .𝘉𝘢𝘯𝘶𝘴𝘦𝘳 *<@ᴛᴀɢ>*
+┃👑 .𝘜𝘯𝘣𝘢𝘯𝘶𝘴𝘦𝘳 *< @ᴛᴀɢ>*
+┃👑 .𝘋𝘴𝘰𝘸𝘯𝘦𝘳
+┃👑 .𝘔𝘣𝘢𝘯
+┃👑 .𝘚𝘱𝘢𝘮2
+┃👑 .𝘙𝘦𝘶𝘯𝘪𝘰𝘯
+┃👑 .𝘙𝘦𝘶𝘯𝘪𝘰𝘯𝘴𝘵𝘢𝘧𝘧
+┃👑 .𝘜𝘱𝘥𝘢𝘵𝘦
+┃👑 .𝘊𝘩𝘦𝘵𝘢𝘳
+┃👑 .𝘈𝘶𝘵𝘰𝘢𝘥𝘮𝘪𝘯
+┃👑 .𝘑𝘰𝘪𝘯
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━━━[ 𝗢𝗡/𝗢𝗙𝗙 📌 ]━━⬣
+┃🌪️ .𝘖𝘯/𝘖𝘧𝘧
+┃🌪️ .𝘌𝘯𝘢𝘣𝘭𝘦/𝘋𝘪𝘴𝘢𝘣𝘭𝘦
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━━[ 𝗗𝗘𝗦𝗖𝗔𝗥𝗚𝗔𝗦 🚀 ]━⬣
+┃🎯 .𝘚𝘱𝘰𝘵𝘪𝘧𝘺
+┃🎯 .𝘠𝘵𝘢
+┃🎯 .𝘠𝘵𝘮𝘱3
+┃🎯 .𝘠𝘵𝘮𝘱4
+┃🎯 .𝘗𝘭𝘢𝘺
+┃🎯 .𝘗𝘭𝘢𝘺2
+┃🎯 .𝘠𝘵𝘷
+┃🎯 .𝘛𝘪𝘬𝘵𝘰𝘬2 *<ʟɪɴᴋ>*
+┃🎯 .𝘛𝘪𝘬𝘵𝘰𝘬 *<ʟɪɴᴋ>*
+┃🎯 .𝘛𝘪𝘬𝘵𝘰𝘬𝘮𝘱3 *<ʟɪɴᴋ>*
+┃🎯 .𝘐𝘨 *<ʟɪɴᴋ>*
+┃🎯 .𝘍𝘢𝘤𝘦𝘣𝘰𝘰𝘬 *<ʟɪɴᴋ>*
+┃🎯 .𝘛𝘵𝘮𝘱3
+┃🎯 .𝘈𝘱𝘬
+┃🎯 .𝘈𝘱𝘬2
+┃🎯 .𝘔𝘦𝘥𝘪𝘢𝘧𝘪𝘳𝘦
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━[ 𝗖𝗢𝗡𝗩𝗘𝗥𝗧𝗜𝗗𝗢𝗥𝗘𝗦 🛰️ ]━⬣
+┃🌐 .𝘏𝘥
+┃🌐 .𝘛𝘰𝘶𝘳𝘭
+┃🌐 .𝘋𝘢𝘭𝘭𝘦
+┃🌐 .𝘙𝘦𝘤
+┃🌐 .𝘗𝘪𝘯𝘢𝘵𝘳𝘢𝘴
+┃🌐 .𝘍𝘭𝘶𝘹
+┃🌐 .𝘗𝘪𝘯𝘴𝘦𝘨𝘶𝘪𝘳
+┃🌐 .𝘚𝘦𝘵𝘣𝘢𝘯𝘯𝘦𝘳
+┃🌐 .𝘚𝘦𝘵𝘯𝘢𝘮𝘦
+┃🌐 .𝘵𝘵𝘴
+┃🌐 .𝘋𝘦𝘮𝘰
+┃🌐 .𝘛𝘰𝘮𝘱3
+┃🌐 .𝘙𝘦𝘮𝘰𝘷𝘦𝘣𝘨
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━━[ 𝗦𝗧𝗜𝗖𝗞𝗘𝗥𝗦 🎭 ]━━⬣
+┃🎭 .𝘉𝘳𝘢𝘵𝘪
+┃🎭 .𝘚
+┃🎭 .𝘘𝘤
+┃🎭 .𝘈𝘵𝘵𝘱
+┃🎭 .𝘌𝘮𝘰𝘫𝘪𝘮𝘪𝘹
+┃🎭 .𝘞𝘮
+┃🎭 .𝘚𝘤𝘢𝘵
+┃🎭 .𝘗𝘧𝘱
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━━━[ 𝗝𝗨𝗘𝗚𝗢𝗦 🖲 ]━━⬣
+┃🕹️ .𝘊𝘙7
+┃🕹️ .𝘔𝘦𝘴𝘴𝘪
+┃🕹️ .𝘎𝘢𝘺
+┃🕹️ .𝘗𝘶𝘵𝘢
+┃🕹️ .𝘗𝘶𝘵𝘰
+┃🕹️ .𝘗𝘦𝘳𝘳𝘢
+┃🕹️ .𝘔𝘢𝘯𝘤𝘰
+┃🕹️ .𝘔𝘢𝘯𝘤𝘢
+┃🕹️ .𝘡𝘰𝘳𝘳𝘢
+┃🕹️ .𝘉𝘦𝘴𝘢𝘳
+┃🕹️ .𝘈𝘣𝘳𝘢𝘻𝘢𝘳
+┃🕹️ .𝘝𝘪𝘰𝘭𝘢𝘳
+┃🕹️ .𝘚𝘢𝘱𝘰
+┃🕹️ .𝘚𝘢𝘱𝘢
+┃🕹️ .𝘛𝘰𝘤𝘢𝘳
+┃🕹️ .𝘋𝘢𝘥𝘰
+┃🕹️ .𝘎𝘢𝘺2
+┃🕹️ .𝘗𝘢𝘫𝘦𝘳𝘰
+┃🕹️ .𝘗𝘢𝘫𝘦𝘳𝘢
+┃🕹️ .𝘓𝘦𝘴𝘣𝘪𝘢𝘯𝘢
+┃🕹️ .𝘙𝘢𝘵𝘢
+┃🕹️ .𝘗𝘳𝘰𝘴𝘵𝘪𝘵𝘶𝘵𝘢
+┃🕹️ .𝘍𝘰𝘭𝘭𝘢𝘳
+┃🕹️ .𝘍𝘰𝘳𝘮𝘢𝘳𝘵𝘳𝘪𝘰
+┃🕹️ .𝘍𝘰𝘳𝘮𝘢𝘳𝘱𝘢𝘳𝘦𝘫𝘢
+┃🕹️ .𝘍𝘰𝘳𝘮𝘢𝘳𝘱𝘢𝘳𝘦𝘫𝘢5
+┃🕹️ .𝘍𝘢𝘤𝘵𝘰
+┃🕹️ .𝘔𝘢𝘳𝘳𝘺
+┃🕹️ .𝘋𝘪𝘷𝘰𝘳𝘤𝘦
+┃🕹️ .𝘗𝘢𝘫𝘦𝘢𝘮𝘦
+┃🕹️ .𝘗𝘢𝘫𝘢
+┃🕹️ .𝘛𝘰𝘱
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+
+╭━━━[ 𝗚𝗔𝗠𝗘 🖥 ]━━━⬣
+┃🎮 .𝘗𝘦𝘭𝘦𝘢𝘳
+┃🎮 .𝘊𝘢𝘱𝘪𝘵𝘢𝘭𝘥𝘦
+┃🎮 .𝘎𝘢𝘮𝘦
+┃🎮 .𝘚𝘭𝘰𝘵
+┃🎮 .𝘛𝘳𝘪𝘷𝘪𝘢
+┃🎮 .𝘉𝘶𝘴𝘤𝘢𝘳𝘱𝘢𝘭𝘢𝘣𝘳𝘢𝘴
+┃🎮 .𝘚𝘰𝘱𝘢
+┃🎮 .𝘋𝘢𝘥𝘰
+┃🎮 .𝘈𝘩𝘰𝘳𝘤𝘢𝘥𝘰
+┃🎮 .𝘈𝘥𝘪𝘷𝘪𝘯𝘢𝘳𝘣𝘢𝘯𝘥𝘦𝘳𝘢
+╰━━━━━━━⋆★⋆━━━━━━━⬣
+> *© ⍴᥆ᥕᥱrᥱძ ᑲᥡ һᥒ ᥱᥣძᥱr*
+`.trim();
+
+m.react('🔰');
+
+        // Enviar solo el texto del menú
+        await conn.sendMessage(m.chat, { 
+    image: { url: 'https://i.postimg.cc/52XqrZq6/Picsart-25-04-17-12-02-21-747.jpg' }, 
+    caption: menu, 
+    mentions: [m.sender] 
+});
+    } catch (e) {
+        await m.reply(`⚠ Error al ejecutar el comando. Intenta nuevamente o reporta este problema.\n\nDetalles del error:\n${e.message}`);
+        console.error(e);
     }
-    let muptime = clockString(_muptime)
-    let uptime = clockString(_uptime)
-    let totalreg = Object.keys(global.db.data.users).length
-    let rtotalreg = Object.values(global.db.data.users).filter(user => user.registered == true).length
-    let help = Object.values(global.plugins).filter(plugin => !plugin.disabled).map(plugin => {
-      return {
-        help: Array.isArray(plugin.tags) ? plugin.help : [plugin.help],
-        tags: Array.isArray(plugin.tags) ? plugin.tags : [plugin.tags],
-        prefix: 'customPrefix' in plugin,
-        limit: plugin.limit,
-        premium: plugin.premium,
-        enabled: !plugin.disabled,
-      }
-    })
-    for (let plugin of help)
-      if (plugin && 'tags' in plugin)
-        for (let tag of plugin.tags)
-          if (!(tag in tags) && tag) tags[tag] = tag
-    conn.menu = conn.menu ? conn.menu : {}
-    let before = conn.menu.before || defaultMenu.before
-    let header = conn.menu.header || defaultMenu.header
-    let body = conn.menu.body || defaultMenu.body
-    let footer = conn.menu.footer || defaultMenu.footer
-    let after = conn.menu.after || (conn.user.jid == global.conn.user.jid ? '' : ``) + defaultMenu.after
-    let _text = [
-      before,
-      ...Object.keys(tags).map(tag => {
-        return header.replace(/%category/g, tags[tag]) + '\n' + [
-          ...help.filter(menu => menu.tags && menu.tags.includes(tag) && menu.help).map(menu => {
-            return menu.help.map(help => {
-              return body.replace(/%cmd/g, menu.prefix ? help : '%p' + help)
-                .replace(/%islimit/g, menu.limit ? '◜⭐◞' : '')
-                .replace(/%isPremium/g, menu.premium ? '◜🪪◞' : '')
-                .trim()
-            }).join('\n')
-          }),
-          footer
-        ].join('\n')
-      }),
-      after
-    ].join('\n')
-    let text = typeof conn.menu == 'string' ? conn.menu : typeof conn.menu == 'object' ? _text : ''
-   let replace = {
- "%": "%",
- p: _p,
- uptime,
- muptime,
- me: conn.getName(conn.user.jid),
- npmname: _package.name,
- npmdesc: _package.description,
- version: _package.version,
- exp: exp - min,
- maxexp: xp,
- totalexp: exp,
- xp4levelup: max - exp,
- github: _package.homepage ? _package.homepage.url || _package.homepage : "[unknown github url]",
- mode,
- _p,
- tag,
- name,
- level,
- limit,
- name,
- totalreg,
- readmore: readMore
-   }
-    text = text.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join`|`})`, 'g'), (_, name) => '' + replace[name])
+};
 
-    let pp = 'https://i.ibb.co/CPVcnqH/file.jpg'
-    let pp2 = 'https://i.ibb.co/9WrytGt/file.jpg'
-    let pp3 = 'https://i.ibb.co/CPVcnqH/file.jpg'
-    let pp4 = 'https://i.ibb.co/9WrytGt/file.jpg'
-    let pp5 = 'https://i.ibb.co/CPVcnqH/file.jpg'
-    let pp6 = 'https://i.ibb.co/9WrytGt/file.jpg'
-    let pp7 = 'https://i.ibb.co/CPVcnqH/file.jpg'
-    let pp8 = 'https://i.ibb.co/9WrytGt/file.jpg'
-    let pp9 = 'https://i.ibb.co/JmcS3kv/Sylph.jpg'
-    let pp10 = 'https://i.ibb.co/CPVcnqH/file.jpg'
-    let pp11 = 'https://i.ibb.co/JmcS3kv/Sylph.jpg'
-    let pp12 = 'https://i.ibb.co/CPVcnqH/file.jpg'
-    let pp13 = 'https://i.ibb.co/Cs6Tt9V/Sylph.jpg'
-    let pp14 = 'https://i.ibb.co/JmcS3kv/Sylph.jpg'
-    let pp15 = 'https://i.ibb.co/Cs6Tt9V/Sylph.jpg'
-    let img = 'https://files.catbox.moe/l81ahk.jpg'
-    let img2 = 'https://d.uguu.se/iqqLBUfF.jpg'
-    await m.react('⭐')
-   // await conn.sendMessage(m.chat, { video: { url: [pp, pp2, pp3, pp4, pp5, pp6, pp7, pp8, pp9, pp10, pp11, pp12, pp13, pp14, pp15].getRandom() }, gifPlayback: true, caption: text.trim(), mentions: [m.sender] }, { quoted: estilo })
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', text.trim(), m, null, rcanal)
-   //await conn.sendAi(m.chat, botname, textbot, text.trim(), img, img, canal, estilo)
-
-  } catch (e) {
-    conn.reply(m.chat, '❎ Lo sentimos, el menú tiene un error.', m)
-    throw e
-  }
-}
-
-handler.help = ['allmenu']
-handler.tags = ['main']
-handler.command = ['allmenu', 'menucompleto', 'menúcompleto', 'menú', 'menu'] 
-handler.register = true 
-export default handler
-
-
-const more = String.fromCharCode(8206)
-const readMore = more.repeat(4001)
-
-function clockString(ms) {
-  let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
-  let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
-  let s = isNaN(ms) ? '--' : Math.floor(ms / 1000) % 60
-  return [h, m, s].map(v => v.toString().padStart(2, 0)).join(':')
-}
-
-  var ase = new Date();
-  var hour = ase.getHours();
-switch(hour){
-  case 0: hour = 'una linda noche 🌙'; break;
-  case 1: hour = 'una linda noche 💤'; break;
-  case 2: hour = 'una linda noche 🦉'; break;
-  case 3: hour = 'una linda mañana ✨'; break;
-  case 4: hour = 'una linda mañana 💫'; break;
-  case 5: hour = 'una linda mañana 🌅'; break;
-  case 6: hour = 'una linda mañana 🌄'; break;
-  case 7: hour = 'una linda mañana 🌅'; break;
-  case 8: hour = 'una linda mañana 💫'; break;
-  case 9: hour = 'una linda mañana ✨'; break;
-  case 10: hour = 'un lindo dia 🌞'; break;
-  case 11: hour = 'un lindo dia 🌨'; break;
-  case 12: hour = 'un lindo dia ❄'; break;
-  case 13: hour = 'un lindo dia 🌤'; break;
-  case 14: hour = 'una linda tarde 🌇'; break;
-  case 15: hour = 'una linda tarde 🥀'; break;
-  case 16: hour = 'una linda tarde 🌹'; break;
-  case 17: hour = 'una linda tarde 🌆'; break;
-  case 18: hour = 'una linda noche 🌙'; break;
-  case 19: hour = 'una linda noche 🌃'; break;
-  case 20: hour = 'una linda noche 🌌'; break;
-  case 21: hour = 'una linda noche 🌃'; break;
-  case 22: hour = 'una linda noche 🌙'; break;
-  case 23: hour = 'una linda noche 🌃'; break;
-}
-  var greeting = "espero que tengas " + hour;
+handler.command = ['allmenu', 'menu', 'menuall', 'menucompleto'];
+handler.register = false;
+export default handler;
